@@ -1,4 +1,5 @@
-// Copyright (c) 2026 SulPoi. All Rights Reserved.
+// Copyright (c) 2026 SulPoi
+// SPDX-License-Identifier: MIT
 
 #pragma once
 

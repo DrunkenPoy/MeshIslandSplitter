@@ -22,3 +22,14 @@ Static Mesh 안의 물리적으로 분리된 덩어리(island)를 자동 감지�
 - [ ] 5. 레벨 액터 치환 / 일괄 처리
 
 자세한 설계는 [Docs/DESIGN.md](Docs/DESIGN.md) 참고.
+
+## 라이선스
+이 플러그인의 소스 코드는 [MIT License](LICENSE)로 배포됩니다.
+
+Unreal Engine 및 관련 로고는 Epic Games, Inc.의 상표입니다.
+이 플러그인을 사용하려면 Unreal Engine이 필요하며, 엔진 자체는 [Unreal Engine EULA](https://www.unrealengine.com/eula)의 적용을 받습니다.
+이 저장소에는 엔진 소스 코드가 포함되어 있지 않습니다.
+
+## 기여
+이슈와 PR 환영합니다. 기여한 코드는 동일한 MIT License로 배포되는 데 동의한 것으로 간주합니다.
+엔진 소스 코드를 복사해 넣는 PR은 EULA 문제로 받을 수 없습니다.
