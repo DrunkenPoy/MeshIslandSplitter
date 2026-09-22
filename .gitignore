@@ -1,0 +1,37 @@
+# ---- UE generated ----
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+Build/
+Packaged/
+
+# ---- IDE ----
+.vs/
+.vscode/
+.idea/
+*.sln
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+*.xcworkspace
+*.xcodeproj
+
+# ---- Compiled ----
+*.dll
+*.pdb
+*.exe
+*.lib
+*.exp
+*.obj
+*.so
+*.dylib
+*.modules
+*.target
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+desktop.ini
