@@ -24,13 +24,12 @@ public class MeshIslandSplitter : ModuleRules
 			"ToolMenus",
 			"ContentBrowser",
 			"AssetTools",
+			"AssetRegistry",
 
-			// --- Mesh processing (enable in step 2: splitter core) ---
-			// "MeshDescription",
-			// "StaticMeshDescription",
-			// "GeometryCore",
-			// "DynamicMesh",
-			// "MeshConversion",
+			// Mesh processing. The split algorithm itself is self-contained (MISSplitCore)
+			// and does not depend on GeometryProcessing.
+			"MeshDescription",
+			"StaticMeshDescription",
 		});
 	}
 }
