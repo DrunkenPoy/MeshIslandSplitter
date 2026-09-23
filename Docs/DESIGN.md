@@ -39,10 +39,19 @@ GeometryProcessing(`FDynamicMesh3`/`FMeshConnectedComponents`)은 쓰지 않는�
 근접 병합과 머티리얼 경계 옵션이 필요하고, 코어를 엔진 없이 단위 테스트하기 위해서다
 (`Tests/CoreStandalone`, CI: `.github/workflows/core-tests.yml`).
 
-## 진입점 (2단계 기준)
+## 진입점
+- Content Browser: Static Mesh 우클릭 → Mesh Island Splitter (아래 "에디터 UI" 참고)
 - `FMISMeshSplitter::Analyze` / `Split` (C++)
 - `UMISSplitterLibrary::AnalyzeStaticMesh` / `SplitStaticMesh` (Blueprint, Python)
 - 콘솔: `MIS.AnalyzeSelected`, `MIS.SplitSelected` (`mode= dist= pct= weld= pivot= matboundary=`)
+
+## 에디터 UI (3단계)
+- `UToolMenus` 시작 콜백에서 `UE::ContentBrowser::ExtendToolMenu_AssetContextMenu(UStaticMesh)`를 확장,
+  "Asset Actions" 섹션에 **Mesh Island Splitter** 서브메뉴(Analyze Islands / Split into Islands)를 추가.
+- 선택 목록은 `UContentBrowserAssetContextMenuContext`에서 가져오며, 실제 작업은 콘솔 커맨드와 공유하는
+  `MISEditorActions`(Private)가 수행: 로그 + 에디터 알림, 분할 후 생성된 애셋으로 Content Browser 동기화.
+- 메뉴 소유자는 모듈 인스턴스이며 `ShutdownModule`에서 `UToolMenus::UnregisterOwner`로 해제.
+- 설정은 아직 `FMISSplitSettings` 기본값 고정 → 4단계에서 옵션 다이얼로그로 대체.
 
 ## 결정된 사항
 - 피벗: `KeepOriginal`(기본) / `BoundsCenter` / `BoundsBottomCenter`.

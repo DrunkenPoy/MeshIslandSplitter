@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
-	"Version": 2,
-	"VersionName": "0.2.0",
+	"Version": 3,
+	"VersionName": "0.3.0",
 	"FriendlyName": "Mesh Island Splitter",
 	"Description": "Editor tool that automatically splits a Static Mesh into separate meshes, one per physically disconnected island.",
 	"Category": "Editor",

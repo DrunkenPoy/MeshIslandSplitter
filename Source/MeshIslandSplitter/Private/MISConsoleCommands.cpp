@@ -1,7 +1,8 @@
 // Copyright (c) 2026 DrunkenPoy
 // SPDX-License-Identifier: MIT
 //
-// 개발용 콘솔 커맨드 (3단계에서 콘텐츠 브라우저 메뉴가 추가되기 전까지 사용).
+// 개발용 콘솔 커맨드. 콘텐츠 브라우저 우클릭 메뉴와 같은 액션을 실행하되,
+// 옵션 UI(4단계) 없이 인자로 설정을 바꿔 가며 테스트할 때 사용한다.
 //
 //   MIS.AnalyzeSelected [key=value ...]   드라이 런, 아일랜드/파트 개수를 로그로 출력
 //   MIS.SplitSelected   [key=value ...]   선택한 각 스태틱 메시 옆에 파트 애셋 생성
@@ -16,6 +17,7 @@
 //
 // 예: MIS.AnalyzeSelected mode=proximity dist=1.5 matboundary=1
 
+#include "MISEditorActions.h"
 #include "MISMeshSplitter.h"
 
 #include "AssetRegistry/AssetData.h"
@@ -105,44 +107,14 @@ namespace MISConsole
 	{
 		FMISSplitSettings Settings;
 		ParseSettings(Args, Settings);
-		for (UStaticMesh* Mesh : GetSelectedStaticMeshes())
-		{
-			FMISSplitAnalysis Analysis;
-			if (FMISMeshSplitter::Analyze(Mesh, Settings, Analysis))
-			{
-				FString Counts;
-				for (int32 Index = 0; Index < Analysis.PartTriangleCounts.Num(); ++Index)
-				{
-					Counts += FString::Printf(TEXT("%s%d"), Index ? TEXT(", ") : TEXT(""), Analysis.PartTriangleCounts[Index]);
-				}
-				UE_LOG(LogMISSplitter, Display, TEXT("  part triangle counts: [%s]"), *Counts);
-			}
-		}
+		MISEditorActions::AnalyzeMeshes(GetSelectedStaticMeshes(), Settings);
 	}
 
 	void SplitSelected(const TArray<FString>& Args)
 	{
 		FMISSplitSettings Settings;
 		ParseSettings(Args, Settings);
-
-		TArray<UObject*> Created;
-		for (UStaticMesh* Mesh : GetSelectedStaticMeshes())
-		{
-			TArray<FMISSplitPart> Parts;
-			if (FMISMeshSplitter::Split(Mesh, Settings, Parts))
-			{
-				for (const FMISSplitPart& Part : Parts)
-				{
-					Created.Add(Part.Mesh);
-				}
-			}
-		}
-
-		if (Created.Num() > 0)
-		{
-			FContentBrowserModule& ContentBrowser = FModuleManager::LoadModuleChecked<FContentBrowserModule>("ContentBrowser");
-			ContentBrowser.Get().SyncBrowserToAssets(Created);
-		}
+		MISEditorActions::SplitMeshes(GetSelectedStaticMeshes(), Settings);
 	}
 }
 
