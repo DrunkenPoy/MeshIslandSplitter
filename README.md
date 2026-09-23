@@ -25,8 +25,8 @@ Content Browser에서 Static Mesh를 선택(복수 선택 가능) → 우클릭 
 
 ## 로드맵
 - [x] 1. 저장소/모듈 스캐폴드
-- [x] 2. 분할 코어 (MeshDescription ↔ DynamicMesh, 연결 컴포넌트)
-- [x] 3. Content Browser 우클릭 메뉴 연동
+- [x] 2. 분할 코어 (연결성/근접/머티리얼 분할, 파트 애셋 생성, 콘솔 커맨드·Blueprint API)
+- [x] 3. Content Browser 우클릭 메뉴 연동 (Analyze Islands / Split into Islands, 결과 알림)
 - [ ] 4. 옵션 UI (용접 허용오차, 피벗, 네이밍)
 - [ ] 5. 레벨 액터 치환 / 일괄 처리
 

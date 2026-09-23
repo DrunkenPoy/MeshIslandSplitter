@@ -166,8 +166,7 @@ namespace MISSplitterImpl
 		auto DstSlotNames = DstAttributes.GetPolygonGroupMaterialSlotNames();
 
 		const int32 NumUVChannels = SrcUVs.GetNumChannels();
-		Dst.SetNumUVLayers(NumUVChannels);
-		DstUVs.SetNumChannels(NumUVChannels);
+		Dst.SetNumUVChannels(NumUVChannels);
 
 		TArray<int32> VertexMap;
 		VertexMap.Init(INDEX_NONE, Src.Vertices().GetArraySize());
