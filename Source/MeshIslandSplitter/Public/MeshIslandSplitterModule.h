@@ -17,4 +17,8 @@ public:
 	{
 		return FModuleManager::LoadModuleChecked<FMeshIslandSplitterModule>("MeshIslandSplitter");
 	}
+
+private:
+	/** 콘텐츠 브라우저의 스태틱 메시 우클릭 메뉴에 항목을 등록한다 (UToolMenus 시작 콜백). */
+	void RegisterMenus();
 };

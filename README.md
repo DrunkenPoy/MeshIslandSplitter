@@ -11,13 +11,22 @@ Static Mesh 안의 물리적으로 분리된 덩어리(island)를 자동 감지�
 2. `Scripts\LinkToProject.bat "D:\UE\MISHost"` 실행 → `Plugins\MeshIslandSplitter` 정션 생성
 3. `.uproject` 우클릭 → Generate Visual Studio project files → 빌드
 
+## 사용법
+Content Browser에서 Static Mesh를 선택(복수 선택 가능) → 우클릭 → **Mesh Island Splitter**
+- **Analyze Islands**: 드라이 런. 메시마다 아일랜드/파트 개수를 알림과 Output Log로 보고하며 아무것도 생성하지 않음
+- **Split into Islands**: 원본과 같은 폴더에 `<원본>_Part_NN` 애셋을 생성하고 Content Browser에서 선택. 원본은 변경되지 않음
+
+현재는 기본 설정(Proximity, 병합 거리 1cm, 용접 0.01cm, 원본 피벗)을 사용한다. 설정을 바꿔 테스트하려면 콘솔 커맨드
+`MIS.AnalyzeSelected` / `MIS.SplitSelected`에 `key=value` 인자를 넘긴다 (예: `MIS.SplitSelected mode=connectivity pivot=center`).
+키 목록은 [MISConsoleCommands.cpp](Source/MeshIslandSplitter/Private/MISConsoleCommands.cpp) 참고.
+
 ## 패키징
 `Scripts\BuildPlugin.bat` (기본 엔진 경로: `C:\Program Files\Epic Games\UE_5.8`)
 
 ## 로드맵
 - [x] 1. 저장소/모듈 스캐폴드
-- [ ] 2. 분할 코어 (MeshDescription ↔ DynamicMesh, 연결 컴포넌트)
-- [ ] 3. Content Browser 우클릭 메뉴 연동
+- [x] 2. 분할 코어 (MeshDescription ↔ DynamicMesh, 연결 컴포넌트)
+- [x] 3. Content Browser 우클릭 메뉴 연동
 - [ ] 4. 옵션 UI (용접 허용오차, 피벗, 네이밍)
 - [ ] 5. 레벨 액터 치환 / 일괄 처리
 
