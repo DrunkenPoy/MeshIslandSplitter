@@ -82,6 +82,33 @@ struct MESHISLANDSPLITTER_API FMISSplitSettings
 	EMISPivotMode PivotMode = EMISPivotMode::KeepOriginal;
 
 	/** 새 애셋은 <원본><PartSuffix><인덱스> 형식으로 이름이 지정된다, 예: SM_Gems_Part_00. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Output")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Output|Naming")
 	FString PartSuffix = TEXT("_Part_");
+
+	/** 첫 파트의 인덱스. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Output|Naming", meta = (ClampMin = "0"))
+	int32 StartIndex = 0;
+
+	/** 인덱스 자릿수 (0으로 채움). 2이면 _00, _01, ... */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Output|Naming", meta = (ClampMin = "1", ClampMax = "6"))
+	int32 IndexDigits = 2;
+
+	/** 원본 폴더 아래 파트를 저장할 하위 폴더 (예: "Parts"). 비우면 원본과 같은 폴더. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Output|Naming")
+	FString OutputSubfolder;
+};
+
+/** 레벨에 배치된 원본 액터를 분할 파트로 치환할 때의 옵션. */
+USTRUCT(BlueprintType)
+struct MESHISLANDSPLITTER_API FMISReplaceSettings
+{
+	GENERATED_BODY()
+
+	/** 치환 후 원본 액터를 삭제한다. 끄면 원본은 그대로 남는다. (Undo 가능) */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Replace")
+	bool bDeleteOriginalActors = true;
+
+	/** 파트 액터들을 원본 액터 라벨 이름의 아웃라이너 폴더로 묶는다. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Replace")
+	bool bGroupInOutlinerFolder = true;
 };

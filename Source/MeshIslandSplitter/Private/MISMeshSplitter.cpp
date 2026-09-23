@@ -357,11 +357,51 @@ bool FMISMeshSplitter::Analyze(const UStaticMesh* Source, const FMISSplitSetting
 	return true;
 }
 
-bool FMISMeshSplitter::Split(UStaticMesh* Source, const FMISSplitSettings& Settings, TArray<FMISSplitPart>& OutParts, FText* OutError)
+bool FMISMeshSplitter::ResolveOutputPath(const UStaticMesh* Source, const FMISSplitSettings& Settings, FString& OutPackagePath, FText* OutError)
+{
+	using namespace MISSplitterImpl;
+
+	if (!Source)
+	{
+		SetError(OutError, LOCTEXT("NoSource", "No source mesh."));
+		return false;
+	}
+
+	OutPackagePath = FPackageName::GetLongPackagePath(Source->GetPackage()->GetName());
+
+	FString Subfolder = Settings.OutputSubfolder.TrimStartAndEnd();
+	Subfolder.ReplaceCharInline(TEXT('\\'), TEXT('/'));
+	while (Subfolder.RemoveFromStart(TEXT("/"))) {}
+	while (Subfolder.RemoveFromEnd(TEXT("/"))) {}
+	if (!Subfolder.IsEmpty())
+	{
+		OutPackagePath /= Subfolder;
+	}
+
+	FText Reason;
+	if (!FPackageName::IsValidLongPackageName(OutPackagePath / TEXT("X"), /*bIncludeReadOnlyRoots*/ false, &Reason))
+	{
+		SetError(OutError, FText::Format(LOCTEXT("InvalidOutputPath", "Invalid output folder '{0}': {1}"), FText::FromString(OutPackagePath), Reason));
+		return false;
+	}
+	return true;
+}
+
+bool FMISMeshSplitter::Split(UStaticMesh* Source, const FMISSplitSettings& Settings, TArray<FMISSplitPart>& OutParts, FText* OutError, bool* bOutNothingToSplit)
 {
 	using namespace MISSplitterImpl;
 
 	OutParts.Reset();
+	if (bOutNothingToSplit)
+	{
+		*bOutNothingToSplit = false;
+	}
+
+	FString PackagePath;
+	if (!ResolveOutputPath(Source, Settings, PackagePath, OutError))
+	{
+		return false;
+	}
 
 	FExtractedMesh Mesh;
 	MIS::FCoreSplitParams Params;
@@ -373,6 +413,10 @@ bool FMISMeshSplitter::Split(UStaticMesh* Source, const FMISSplitSettings& Setti
 
 	if (Result.NumGroups < 2)
 	{
+		if (bOutNothingToSplit)
+		{
+			*bOutNothingToSplit = true;
+		}
 		SetError(OutError, FText::Format(LOCTEXT("NothingToSplit", "{0}: nothing to split with the current settings ({1} island(s), 1 part)."),
 			FText::FromString(Source->GetName()), FText::AsNumber(Result.NumIslands)));
 		return false;
@@ -391,7 +435,8 @@ bool FMISMeshSplitter::Split(UStaticMesh* Source, const FMISSplitSettings& Setti
 	}
 
 	const FMeshDescription& SourceDescription = *Source->GetMeshDescription(SourceLOD);
-	const FString PackagePath = FPackageName::GetLongPackagePath(Source->GetPackage()->GetName());
+	const int32 IndexDigits = FMath::Clamp(Settings.IndexDigits, 1, 6);
+	const int32 StartIndex = FMath::Max(Settings.StartIndex, 0);
 
 	FScopedSlowTask SlowTask(float(Result.NumGroups),
 		FText::Format(LOCTEXT("Splitting", "Splitting {0} into {1} parts..."), FText::FromString(Source->GetName()), FText::AsNumber(Result.NumGroups)));
@@ -407,7 +452,7 @@ bool FMISMeshSplitter::Split(UStaticMesh* Source, const FMISSplitSettings& Setti
 		TArray<FPolygonGroupID> SourceGroups;
 		BuildPartDescription(SourceDescription, GroupTriangleIds[Group], FVector3f(Pivot), PartDescription, SourceGroups);
 
-		const FString BaseName = FString::Printf(TEXT("%s/%s%s%02d"), *PackagePath, *Source->GetName(), *Settings.PartSuffix, Group);
+		const FString BaseName = FString::Printf(TEXT("%s/%s%s%0*d"), *PackagePath, *Source->GetName(), *Settings.PartSuffix, IndexDigits, StartIndex + Group);
 		UStaticMesh* PartMesh = CreatePartAsset(Source, BaseName, MoveTemp(PartDescription), SourceGroups);
 
 		FMISSplitPart& Part = OutParts.AddDefaulted_GetRef();
