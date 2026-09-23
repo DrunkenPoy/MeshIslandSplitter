@@ -1,4 +1,4 @@
-// Copyright (c) 2026 SulPoi
+// Copyright (c) 2026 DrunkenPoy
 // SPDX-License-Identifier: MIT
 
 #pragma once
@@ -9,7 +9,7 @@
 #include "MISSplitterLibrary.generated.h"
 
 /**
- * Editor scripting entry points (Editor Utility Widgets, Python: unreal.MISSplitterLibrary).
+ * 에디터 스크립팅 진입점 (Editor Utility Widgets, Python: unreal.MISSplitterLibrary).
  */
 UCLASS()
 class MESHISLANDSPLITTER_API UMISSplitterLibrary : public UBlueprintFunctionLibrary
@@ -17,11 +17,11 @@ class MESHISLANDSPLITTER_API UMISSplitterLibrary : public UBlueprintFunctionLibr
 	GENERATED_BODY()
 
 public:
-	/** Dry run: how many parts the settings would produce. Creates nothing. */
+	/** 드라이 런: 현재 설정으로 몇 개의 파트가 생성될지 계산한다. 아무것도 생성하지 않는다. */
 	UFUNCTION(BlueprintCallable, Category = "Mesh Island Splitter")
 	static bool AnalyzeStaticMesh(UStaticMesh* SourceMesh, const FMISSplitSettings& Settings, FMISSplitAnalysis& OutAnalysis);
 
-	/** Creates one Static Mesh asset per part next to the source. The source is left untouched. */
+	/** 원본 옆에 파트마다 스태틱 메시 애셋을 하나씩 생성한다. 원본은 변경되지 않는다. */
 	UFUNCTION(BlueprintCallable, Category = "Mesh Island Splitter")
 	static bool SplitStaticMesh(UStaticMesh* SourceMesh, const FMISSplitSettings& Settings, TArray<FMISSplitPart>& OutParts);
 };

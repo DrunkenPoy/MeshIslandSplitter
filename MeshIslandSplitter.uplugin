@@ -5,7 +5,7 @@
 	"FriendlyName": "Mesh Island Splitter",
 	"Description": "Editor tool that automatically splits a Static Mesh into separate meshes, one per physically disconnected island.",
 	"Category": "Editor",
-	"CreatedBy": "SulPoi",
+	"CreatedBy": "DrunkenPoy",
 	"CreatedByURL": "",
 	"DocsURL": "",
 	"MarketplaceURL": "",
