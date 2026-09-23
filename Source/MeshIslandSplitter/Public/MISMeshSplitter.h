@@ -60,7 +60,11 @@ public:
 
 	/**
 	 * 원본 애셋 옆에 파트마다 새 스태틱 메시 애셋을 하나씩 생성한다. 원본은 수정되지 않는다.
-	 * LOD0만 분할된다. 결과 파트가 2개 미만이면 false를 반환하며 아무것도 생성하지 않는다.
+	 * LOD0만 분할된다. 결과 파트가 2개 미만이면 false를 반환하며 아무것도 생성하지 않는다
+	 * (이때 bOutNothingToSplit이 true가 된다. 일괄 처리에서 실패와 구분하는 데 쓴다).
 	 */
-	static bool Split(UStaticMesh* Source, const FMISSplitSettings& Settings, TArray<FMISSplitPart>& OutParts, FText* OutError = nullptr);
+	static bool Split(UStaticMesh* Source, const FMISSplitSettings& Settings, TArray<FMISSplitPart>& OutParts, FText* OutError = nullptr, bool* bOutNothingToSplit = nullptr);
+
+	/** 파트 애셋이 생성될 패키지 경로 (원본 폴더 + OutputSubfolder). 경로가 유효하지 않으면 false. */
+	static bool ResolveOutputPath(const UStaticMesh* Source, const FMISSplitSettings& Settings, FString& OutPackagePath, FText* OutError = nullptr);
 };

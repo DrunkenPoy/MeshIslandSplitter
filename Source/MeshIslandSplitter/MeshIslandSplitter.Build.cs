@@ -21,6 +21,8 @@ public class MeshIslandSplitter : ModuleRules
 			"Slate",
 			"SlateCore",
 			"UnrealEd",
+			"EditorSubsystem",
+			"PropertyEditor",
 			"ToolMenus",
 			"ContentBrowser",
 			"AssetTools",
