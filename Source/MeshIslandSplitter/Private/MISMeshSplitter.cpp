@@ -1,4 +1,4 @@
-// Copyright (c) 2026 SulPoi
+// Copyright (c) 2026 DrunkenPoy
 // SPDX-License-Identifier: MIT
 
 #include "MISMeshSplitter.h"
@@ -26,7 +26,7 @@ namespace MISSplitterImpl
 	struct FExtractedMesh
 	{
 		MIS::FCoreMeshInput Core;
-		TArray<FTriangleID> TriangleIds;	// Core triangle index -> source triangle id
+		TArray<FTriangleID> TriangleIds;	// 코어 삼각형 인덱스 -> 원본 삼각형 id
 	};
 
 	void SetError(FText* OutError, const FText& Message)
@@ -132,9 +132,9 @@ namespace MISSplitterImpl
 	}
 
 	/**
-	 * Copies the given triangles into a fresh mesh description, keeping every per-instance attribute
-	 * (normals, tangents, binormal signs, colors, all UV channels), edge hardness and material slot names.
-	 * Output polygon groups are created in first-use order; OutSourceGroups lists the matching source groups.
+	 * 주어진 삼각형들을 새 메시 디스크립션으로 복사하며, 인스턴스별 모든 속성
+	 * (노멀, 탄젠트, 바이노멀 부호, 컬러, 모든 UV 채널)과 엣지 강도, 머티리얼 슬롯 이름을 유지한다.
+	 * 출력 폴리곤 그룹은 처음 사용된 순서대로 생성되며, OutSourceGroups는 대응하는 원본 그룹들을 나열한다.
 	 */
 	void BuildPartDescription(
 		const FMeshDescription& Src,
@@ -231,7 +231,7 @@ namespace MISSplitterImpl
 			Dst.CreateTriangle(DstGroup, TArrayView<const FVertexInstanceID>(DstInstances, 3));
 		}
 
-		// Edges are created implicitly by CreateTriangle; copy hardness from the matching source edge
+		// 엣지는 CreateTriangle에 의해 암묵적으로 생성됨; 대응하는 원본 엣지에서 강도를 복사
 		for (const FEdgeID DstEdge : Dst.Edges().GetElementIDs())
 		{
 			const FVertexID SrcV0 = DstToSrcVertex[Dst.GetEdgeVertex(DstEdge, 0).GetValue()];
@@ -244,7 +244,7 @@ namespace MISSplitterImpl
 		}
 	}
 
-	/** Finds the source material for a polygon group: slot name first, then index as a fallback. */
+	/** 폴리곤 그룹에 대한 원본 머티리얼을 찾는다: 슬롯 이름 우선, 없으면 인덱스로 대체. */
 	FStaticMaterial FindSourceMaterial(const UStaticMesh* Source, FName SlotName, FPolygonGroupID SourceGroup)
 	{
 		const TArray<FStaticMaterial>& Materials = Source->GetStaticMaterials();
@@ -283,7 +283,7 @@ namespace MISSplitterImpl
 		UPackage* Package = CreatePackage(*PackageName);
 		UStaticMesh* NewMesh = NewObject<UStaticMesh>(Package, FName(*AssetName), RF_Public | RF_Standalone | RF_Transactional);
 
-		// Materials in the same order as the polygon groups, so section N -> material N
+		// 머티리얼을 폴리곤 그룹과 동일한 순서로 배치하여 섹션 N -> 머티리얼 N이 되도록 함
 		FStaticMeshConstAttributes PartAttributes(PartDescription);
 		const auto SlotNames = PartAttributes.GetPolygonGroupMaterialSlotNames();
 		TArray<FStaticMaterial> PartMaterials;
@@ -308,7 +308,7 @@ namespace MISSplitterImpl
 		NewMesh->SetLightMapCoordinateIndex(Source->GetLightMapCoordinateIndex());
 		NewMesh->SetLightMapResolution(Source->GetLightMapResolution());
 
-		NewMesh->PostEditChange();	// Builds render data
+		NewMesh->PostEditChange();	// 렌더 데이터 빌드
 		FAssetRegistryModule::AssetCreated(NewMesh);
 		NewMesh->MarkPackageDirty();
 		return NewMesh;
@@ -379,7 +379,7 @@ bool FMISMeshSplitter::Split(UStaticMesh* Source, const FMISSplitSettings& Setti
 		return false;
 	}
 
-	// Bucket triangles per group (both core indices for pivots and source ids for copying)
+	// 그룹별로 삼각형을 분류 (피벗용 코어 인덱스와 복사용 원본 id 둘 다)
 	TArray<TArray<int32>> GroupCoreTriangles;
 	GroupCoreTriangles.SetNum(Result.NumGroups);
 	TArray<TArray<FTriangleID>> GroupTriangleIds;

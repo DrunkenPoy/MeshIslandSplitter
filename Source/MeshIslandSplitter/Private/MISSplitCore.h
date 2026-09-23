@@ -1,4 +1,4 @@
-// Copyright (c) 2026 SulPoi
+// Copyright (c) 2026 DrunkenPoy
 // SPDX-License-Identifier: MIT
 
 #pragma once
@@ -6,26 +6,26 @@
 #include "CoreMinimal.h"
 
 /**
- * Engine-agnostic split core.
+ * 엔진에 독립적인 분할 코어.
  *
- * Only uses TArray / TMap / FVector3d / FMath so it can be compiled and unit-tested
- * outside the engine (see Tests/CoreStandalone). Everything that touches UObjects or
- * FMeshDescription lives in MISMeshSplitter.cpp.
+ * TArray / TMap / FVector3d / FMath만 사용하므로 엔진 없이도
+ * 컴파일하고 단위 테스트할 수 있다 (Tests/CoreStandalone 참고). UObject나
+ * FMeshDescription을 다루는 모든 코드는 MISMeshSplitter.cpp에 있다.
  */
 namespace MIS
 {
 	enum class ECoreSplitMode : uint8
 	{
-		Connectivity,	// Triangles sharing a (welded) vertex belong together
-		Proximity,		// Connectivity islands closer than MergeDistance are merged
-		MaterialSlot	// One group per material slot, topology ignored
+		Connectivity,	// (용접된) 정점을 공유하는 삼각형들은 같은 그룹으로 묶임
+		Proximity,		// MergeDistance보다 가까운 연결성 아일랜드들을 병합
+		MaterialSlot	// 토폴로지와 무관하게 머티리얼 슬롯당 하나의 그룹
 	};
 
 	struct FCoreMeshInput
 	{
 		TArray<FVector3d> Positions;
-		TArray<int32> TriangleVertices;		// 3 indices into Positions per triangle
-		TArray<int32> TriangleMaterials;	// 1 material id per triangle
+		TArray<int32> TriangleVertices;		// 삼각형당 Positions를 가리키는 인덱스 3개
+		TArray<int32> TriangleMaterials;	// 삼각형당 머티리얼 id 1개
 
 		int32 NumTriangles() const { return TriangleVertices.Num() / 3; }
 	};
@@ -35,23 +35,23 @@ namespace MIS
 		ECoreSplitMode Mode = ECoreSplitMode::Proximity;
 		bool bWeldVertices = true;
 		double WeldTolerance = 0.01;	// cm
-		double MergeDistance = 1.0;		// cm, already resolved to absolute units
+		double MergeDistance = 1.0;		// cm, 이미 절대 단위로 변환된 값
 		bool bRespectMaterialBoundary = false;
 	};
 
 	struct FCoreSplitResult
 	{
-		TArray<int32> TriangleGroups;	// group index per triangle, 0..NumGroups-1
+		TArray<int32> TriangleGroups;	// 삼각형당 그룹 인덱스, 0..NumGroups-1
 		int32 NumGroups = 0;
-		int32 NumIslands = 0;			// connectivity islands (after welding), for diagnostics
+		int32 NumIslands = 0;			// 용접 이후의 연결성 아일랜드 수 (진단용)
 	};
 
-	/** Assigns every triangle to a group. Groups are numbered in order of first appearance. */
+	/** 모든 삼각형에 그룹을 할당한다. 그룹 번호는 처음 등장한 순서대로 매겨진다. */
 	void ComputeSplitGroups(const FCoreMeshInput& Input, const FCoreSplitParams& Params, FCoreSplitResult& OutResult);
 
-	/** Diagonal length of the bounds of all referenced vertices. Used for relative distances. */
+	/** 참조되는 모든 정점의 바운즈 대각선 길이. 상대 거리 계산에 사용된다. */
 	double ComputeBoundsDiagonal(const FCoreMeshInput& Input);
 
-	/** Squared minimum distance between two triangles (0 if they intersect). Exposed for tests. */
+	/** 두 삼각형 사이 최소 거리의 제곱 (교차하면 0). 테스트를 위해 노출됨. */
 	double TriangleTriangleDistanceSq(const FVector3d A[3], const FVector3d B[3]);
 }

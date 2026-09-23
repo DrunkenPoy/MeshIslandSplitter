@@ -1,4 +1,4 @@
-// Copyright (c) 2026 SulPoi
+// Copyright (c) 2026 DrunkenPoy
 // SPDX-License-Identifier: MIT
 
 #include "MeshIslandSplitterModule.h"
@@ -10,12 +10,12 @@ DEFINE_LOG_CATEGORY(LogMeshIslandSplitter);
 void FMeshIslandSplitterModule::StartupModule()
 {
 	UE_LOG(LogMeshIslandSplitter, Log, TEXT("MeshIslandSplitter module started."));
-	// TODO(step 3): Register Content Browser context menu for UStaticMesh via UToolMenus.
+	// TODO(3단계): UToolMenus를 통해 UStaticMesh용 콘텐츠 브라우저 컨텍스트 메뉴 등록.
 }
 
 void FMeshIslandSplitterModule::ShutdownModule()
 {
-	// TODO(step 3): Unregister menus (UToolMenus::UnregisterOwner(this)).
+	// TODO(3단계): 메뉴 등록 해제 (UToolMenus::UnregisterOwner(this)).
 }
 
 #undef LOCTEXT_NAMESPACE

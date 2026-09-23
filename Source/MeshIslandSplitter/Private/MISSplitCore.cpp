@@ -1,4 +1,4 @@
-// Copyright (c) 2026 SulPoi
+// Copyright (c) 2026 DrunkenPoy
 // SPDX-License-Identifier: MIT
 
 #include "MISSplitCore.h"
@@ -8,8 +8,8 @@ namespace MIS
 namespace CoreImpl
 {
 	// ------------------------------------------------------------------
-	// Union-Find (path halving, union toward the smaller index so that
-	// roots stay deterministic regardless of merge order)
+	// Union-Find (경로 반분(path halving), 병합 순서와 무관하게 루트가 결정적으로
+	// 유지되도록 더 작은 인덱스 쪽으로 합침)
 	// ------------------------------------------------------------------
 	struct FUnionFind
 	{
@@ -55,7 +55,7 @@ namespace CoreImpl
 	};
 
 	// ------------------------------------------------------------------
-	// Small AABB
+	// 작은 AABB
 	// ------------------------------------------------------------------
 	struct FAabb
 	{
@@ -79,7 +79,7 @@ namespace CoreImpl
 			return Min.X <= Max.X;
 		}
 
-		/** True if the boxes overlap after growing this box by Margin on every side. */
+		/** 이 박스를 모든 면으로 Margin만큼 확장한 뒤 두 박스가 겹치면 true. */
 		bool OverlapsWithMargin(const FAabb& Other, double Margin) const
 		{
 			return !(Min.X - Margin > Other.Max.X || Other.Min.X - Margin > Max.X
@@ -89,7 +89,7 @@ namespace CoreImpl
 	};
 
 	// ------------------------------------------------------------------
-	// Geometry helpers
+	// 기하 계산 헬퍼
 	// ------------------------------------------------------------------
 	inline double Dot(const FVector3d& A, const FVector3d& B)
 	{
@@ -101,7 +101,7 @@ namespace CoreImpl
 		return FVector3d::CrossProduct(A, B);
 	}
 
-	/** Closest point on a non-degenerate triangle (Ericson, Real-Time Collision Detection 5.1.5). */
+	/** 퇴화되지 않은 삼각형 위의 최근접점 (Ericson, Real-Time Collision Detection 5.1.5). */
 	FVector3d ClosestPointOnTriangle(const FVector3d& P, const FVector3d& A, const FVector3d& B, const FVector3d& C)
 	{
 		const FVector3d AB = B - A;
@@ -157,7 +157,7 @@ namespace CoreImpl
 		return A + AB * V + AC * W;
 	}
 
-	/** Squared distance between segments P1-Q1 and P2-Q2 (Ericson 5.1.9). Handles degenerate segments. */
+	/** 선분 P1-Q1과 P2-Q2 사이 거리의 제곱 (Ericson 5.1.9). 퇴화된 선분도 처리한다. */
 	double SegmentSegmentDistanceSq(const FVector3d& P1, const FVector3d& Q1, const FVector3d& P2, const FVector3d& Q2)
 	{
 		constexpr double Epsilon = 1e-18;
@@ -210,7 +210,7 @@ namespace CoreImpl
 		return (C1 - C2).SizeSquared();
 	}
 
-	/** Moller-Trumbore restricted to the segment P0-P1. */
+	/** 선분 P0-P1로 제한한 Moller-Trumbore 교차 판정. */
 	bool SegmentIntersectsTriangle(const FVector3d& P0, const FVector3d& P1, const FVector3d& A, const FVector3d& B, const FVector3d& C)
 	{
 		const FVector3d Dir = P1 - P0;
@@ -220,7 +220,7 @@ namespace CoreImpl
 		const double Det = Dot(E1, H);
 		if (FMath::Abs(Det) < 1e-12)
 		{
-			return false; // Parallel: coplanar overlap is caught by the distance tests
+			return false; // 평행: 동일 평면상의 겹침은 거리 검사에서 걸러짐
 		}
 		const double InvDet = 1.0 / Det;
 		const FVector3d S = P0 - A;
@@ -243,12 +243,12 @@ namespace CoreImpl
 	{
 		const FVector3d N = Cross(T[1] - T[0], T[2] - T[0]);
 		const double Scale = FMath::Max((T[1] - T[0]).SizeSquared(), (T[2] - T[0]).SizeSquared());
-		// Area^2 negligible relative to edge length^2 squared
+		// 넓이^2가 변 길이^2의 제곱에 비해 무시할 만큼 작음
 		return N.SizeSquared() <= Scale * Scale * 1e-20 || Scale <= 1e-24;
 	}
 
 	// ------------------------------------------------------------------
-	// Spatial hash key (collisions only add candidates; exact distance is always checked)
+	// 공간 해시 키 (충돌은 후보만 추가할 뿐, 정확한 거리는 항상 다시 검사함)
 	// ------------------------------------------------------------------
 	inline uint64 HashCell(int64 X, int64 Y, int64 Z)
 	{
@@ -260,7 +260,7 @@ namespace CoreImpl
 		return int64(FMath::FloorToDouble(Value * InvCellSize));
 	}
 
-	/** Unions all vertices within Tolerance of each other. */
+	/** Tolerance 이내에 있는 모든 정점들을 합친다. */
 	void WeldVertices(const FCoreMeshInput& Input, const TArray<bool>& bReferenced, double Tolerance, FUnionFind& VertexSets)
 	{
 		const double Tol = FMath::Max(Tolerance, 1e-6);
@@ -302,7 +302,7 @@ namespace CoreImpl
 		}
 	}
 
-	/** Compacts arbitrary root ids into 0..N-1 in order of first appearance. */
+	/** 임의의 루트 id들을 처음 등장한 순서대로 0..N-1로 압축한다. */
 	int32 CompactIds(const TArray<int32>& Roots, TArray<int32>& OutCompact, int32 RootSpace)
 	{
 		TArray<int32> RootToCompact;
@@ -336,7 +336,7 @@ double TriangleTriangleDistanceSq(const FVector3d A[3], const FVector3d B[3])
 	const bool bDegA = IsDegenerate(A);
 	const bool bDegB = IsDegenerate(B);
 
-	// Intersection -> 0
+	// 교차 -> 0
 	for (int32 E = 0; E < 3; ++E)
 	{
 		if (!bDegA && SegmentIntersectsTriangle(B[E], B[(E + 1) % 3], A[0], A[1], A[2]))
@@ -351,7 +351,7 @@ double TriangleTriangleDistanceSq(const FVector3d A[3], const FVector3d B[3])
 
 	double Best = TNumericLimits<double>::Max();
 
-	// Vertex vs face (skipped for degenerate faces; their edges cover them below)
+	// 정점 대 면 (퇴화된 면은 건너뜀; 해당 면의 엣지들이 아래에서 커버함)
 	for (int32 V = 0; V < 3; ++V)
 	{
 		if (!bDegB)
@@ -364,7 +364,7 @@ double TriangleTriangleDistanceSq(const FVector3d A[3], const FVector3d B[3])
 		}
 	}
 
-	// Edge vs edge
+	// 엣지 대 엣지
 	for (int32 EA = 0; EA < 3; ++EA)
 	{
 		for (int32 EB = 0; EB < 3; ++EB)
@@ -400,8 +400,8 @@ void ComputeSplitGroups(const FCoreMeshInput& Input, const FCoreSplitParams& Par
 	}
 
 	// --------------------------------------------------------------
-	// 1) Connectivity islands (optionally welded). Always computed:
-	//    Proximity builds on it, and it is a useful diagnostic.
+	// 1) 연결성(Connectivity) 아일랜드 (선택적으로 용접 적용). 항상 계산됨:
+	//    Proximity 모드가 이를 기반으로 하며, 진단 정보로도 유용함.
 	// --------------------------------------------------------------
 	FUnionFind VertexSets(NumVerts);
 
@@ -436,7 +436,7 @@ void ComputeSplitGroups(const FCoreMeshInput& Input, const FCoreSplitParams& Par
 	OutResult.NumIslands = NumIslands;
 
 	// --------------------------------------------------------------
-	// 2) Mode-specific grouping
+	// 2) 모드별 그룹화
 	// --------------------------------------------------------------
 	if (Params.Mode == ECoreSplitMode::MaterialSlot)
 	{
@@ -456,7 +456,7 @@ void ComputeSplitGroups(const FCoreMeshInput& Input, const FCoreSplitParams& Par
 		return;
 	}
 
-	// Proximity: merge islands whose closest triangles are within MergeDistance
+	// Proximity: 최근접 삼각형 사이 거리가 MergeDistance 이내인 아일랜드들을 병합
 	const double Dist = FMath::Max(Params.MergeDistance, 0.0);
 	const double DistSq = Dist * Dist;
 
@@ -492,10 +492,10 @@ void ComputeSplitGroups(const FCoreMeshInput& Input, const FCoreSplitParams& Par
 			}
 			if (IslandSets.Find(I) == IslandSets.Find(J))
 			{
-				continue; // Already merged through another island
+				continue; // 이미 다른 아일랜드를 통해 병합됨
 			}
 
-			// Narrow phase: only triangles near the other island's bounds
+			// 근접 단계: 상대 아일랜드의 바운즈 근처에 있는 삼각형만 대상으로 함
 			CandA.Reset();
 			CandB.Reset();
 			for (const int32 Tri : IslandTris[I])
@@ -555,7 +555,7 @@ void ComputeSplitGroups(const FCoreMeshInput& Input, const FCoreSplitParams& Par
 		IslandRoots[I] = IslandSets.Find(I);
 	}
 
-	// Group numbering follows triangle order, not island order
+	// 그룹 번호는 아일랜드 순서가 아니라 삼각형 순서를 따름
 	TArray<int32> TriGroupRoots;
 	TriGroupRoots.SetNumUninitialized(NumTris);
 	for (int32 Tri = 0; Tri < NumTris; ++Tri)

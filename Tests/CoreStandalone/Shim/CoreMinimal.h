@@ -1,8 +1,8 @@
-// Copyright (c) 2026 SulPoi
+// Copyright (c) 2026 DrunkenPoy
 // SPDX-License-Identifier: MIT
 //
-// Minimal stand-in for the parts of UE's CoreMinimal.h used by MISSplitCore.
-// Lets the split core compile and run without the engine. NOT used by UBT.
+// MISSplitCore가 사용하는 UE CoreMinimal.h의 일부를 대체하는 최소 구현.
+// 엔진 없이도 분할 코어를 컴파일하고 실행할 수 있게 한다. UBT에서는 사용되지 않는다.
 
 #pragma once
 
@@ -23,7 +23,7 @@ using uint64 = uint64_t;
 template <typename T>
 class TArray
 {
-	std::deque<T> Data; // deque avoids the std::vector<bool> proxy problem
+	std::deque<T> Data; // deque를 사용하면 std::vector<bool>의 프록시 문제를 피할 수 있음
 public:
 	int32 Num() const { return int32(Data.size()); }
 	bool IsEmpty() const { return Data.empty(); }

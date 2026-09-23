@@ -1,20 +1,20 @@
-// Copyright (c) 2026 SulPoi
+// Copyright (c) 2026 DrunkenPoy
 // SPDX-License-Identifier: MIT
 //
-// Development console commands (until the Content Browser menu lands in step 3).
+// 개발용 콘솔 커맨드 (3단계에서 콘텐츠 브라우저 메뉴가 추가되기 전까지 사용).
 //
-//   MIS.AnalyzeSelected [key=value ...]   dry run, logs island/part counts
-//   MIS.SplitSelected   [key=value ...]   creates part assets next to each selected Static Mesh
+//   MIS.AnalyzeSelected [key=value ...]   드라이 런, 아일랜드/파트 개수를 로그로 출력
+//   MIS.SplitSelected   [key=value ...]   선택한 각 스태틱 메시 옆에 파트 애셋 생성
 //
-// Keys:
-//   mode=connectivity|proximity|material   (default proximity)
-//   dist=<cm>          absolute merge distance
-//   pct=<percent>      merge distance relative to bounds diagonal
-//   weld=<cm>          weld tolerance, 0 disables welding
+// 키:
+//   mode=connectivity|proximity|material   (기본값 proximity)
+//   dist=<cm>          절대 병합 거리
+//   pct=<percent>      바운즈 대각선 대비 상대 병합 거리
+//   weld=<cm>          용접 허용 오차, 0이면 용접 비활성화
 //   pivot=original|center|bottom
-//   matboundary=0|1    do not merge across materials
+//   matboundary=0|1    머티리얼 경계를 넘어 병합하지 않음
 //
-// Example: MIS.AnalyzeSelected mode=proximity dist=1.5 matboundary=1
+// 예: MIS.AnalyzeSelected mode=proximity dist=1.5 matboundary=1
 
 #include "MISMeshSplitter.h"
 

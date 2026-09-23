@@ -1,4 +1,4 @@
-// Copyright (c) 2026 SulPoi
+// Copyright (c) 2026 DrunkenPoy
 // SPDX-License-Identifier: MIT
 
 using UnrealBuildTool;
@@ -26,8 +26,8 @@ public class MeshIslandSplitter : ModuleRules
 			"AssetTools",
 			"AssetRegistry",
 
-			// Mesh processing. The split algorithm itself is self-contained (MISSplitCore)
-			// and does not depend on GeometryProcessing.
+			// 메시 처리. 분할 알고리즘 자체는 독립적이며(MISSplitCore)
+			// GeometryProcessing에 의존하지 않는다.
 			"MeshDescription",
 			"StaticMeshDescription",
 		});
