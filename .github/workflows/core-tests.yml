@@ -1,0 +1,28 @@
+name: Core tests
+
+on:
+  push:
+    paths:
+      - "Source/MeshIslandSplitter/Private/MISSplitCore.*"
+      - "Tests/CoreStandalone/**"
+      - ".github/workflows/core-tests.yml"
+  pull_request:
+    paths:
+      - "Source/MeshIslandSplitter/Private/MISSplitCore.*"
+      - "Tests/CoreStandalone/**"
+
+jobs:
+  core-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - name: Build
+        run: >
+          g++ -std=c++17 -O2 -Wall -Wextra -Werror
+          -I Tests/CoreStandalone/Shim -I Source/MeshIslandSplitter/Private
+          Source/MeshIslandSplitter/Private/MISSplitCore.cpp Tests/CoreStandalone/CoreTests.cpp
+          -o core_tests
+      - name: Run
+        run: ./core_tests
