@@ -38,7 +38,9 @@ Content Browser 폴더 우클릭 → **Split Static Meshes in Folder...**: 하�
 Blueprint/Python은 `UMISSplitterLibrary` (`SplitStaticMesh`, `SplitStaticMeshes`, `GetLevelActorsUsingMesh`, `ReplaceActorsWithParts`)를 사용한다.
 
 ## 패키징
-`Scripts\BuildPlugin.bat` (기본 엔진 경로: `C:\Program Files\Epic Games\UE_5.8`)
+`Scripts\BuildPlugin.bat [버전 ...]` — 엔진 버전별로 빌드해 `Packaged\5_7.zip`, `Packaged\5_8.zip` 형태로 만든다.
+기본 버전은 `5.7 5.8`, 엔진은 `C:\Program Files\Epic Games\UE_<버전>` (다른 위치면 `EPIC_ROOT` 환경변수로 지정).
+긴 경로(260자 제한) 문제를 피하려고 빌드는 `%TEMP%\mis`에서 진행한다.
 
 ## 로드맵
 - [x] 1. 저장소/모듈 스캐폴드
